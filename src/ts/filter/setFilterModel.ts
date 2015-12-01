@@ -250,7 +250,7 @@ module ag.grid {
         }
 
         public setModel(model: any, isSelectAll: boolean) {
-            if (model && model.length > this.allUniqueValues.length) {
+            if (model && model.length < this.allUniqueValues.length) {
                 this.selectNothing();
                 for (var i = 0; i < model.length; i++) {
                     var newValue = model[i];
