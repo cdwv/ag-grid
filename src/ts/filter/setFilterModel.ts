@@ -254,6 +254,11 @@ module ag.grid {
                 this.selectNothing();
                 for (var i = 0; i < model.length; i++) {
                     var newValue = model[i];
+
+                    if(newValue === 'null') {
+                        newValue = null;
+                    }
+
                     if (this.allUniqueValues.indexOf(newValue) >= 0) {
                         this.selectValue(model[i]);
                     } else {
