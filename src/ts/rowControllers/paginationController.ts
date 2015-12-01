@@ -231,6 +231,23 @@ module ag.grid {
             this.loadPage();
         }
 
+        getPage() {
+            return this.currentPage + 1;
+        }
+
+        setPage(page: any) {
+            if(page > this.totalPages - 1) {
+                page = this.totalPages - 1;
+            }
+
+            if(page < 1) {
+                page = 1;
+            }
+
+            this.currentPage = page - 1;
+            this.loadPage();
+        }
+
         isZeroPagesToDisplay() {
             return this.foundMaxRow && this.totalPages === 0;
         }
@@ -303,4 +320,3 @@ module ag.grid {
         }
     }
 }
-
