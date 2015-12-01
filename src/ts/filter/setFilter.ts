@@ -310,8 +310,21 @@ module ag.grid {
         }
 
         private refreshVirtualRows() {
+            this.updateSelectAllValue();
             this.clearVirtualRows();
             this.drawVirtualRows();
+        }
+
+        updateSelectAllValue() {
+            if(this.model.isEverythingSelected()) {
+                this.eSelectAll.indeterminate = false;
+                this.eSelectAll.checked = true;
+            } else if (this.model.isNothingSelected()) {
+                this.eSelectAll.indeterminate = false;
+                this.eSelectAll.checked = false;
+            } else {
+                this.eSelectAll.indeterminate = true;
+            }
         }
 
         private clearVirtualRows() {
@@ -410,4 +423,3 @@ module ag.grid {
         }
     }
 }
-
