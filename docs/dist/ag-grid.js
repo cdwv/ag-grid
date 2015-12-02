@@ -7737,7 +7737,7 @@ var ag;
                 return this.currentPage + 1;
             };
             PaginationController.prototype.setPage = function (page) {
-                if (page > this.totalPages - 1) {
+                if (this.totalPages !== null && page > this.totalPages - 1) {
                     page = this.totalPages - 1;
                 }
                 if (page < 1) {
