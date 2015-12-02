@@ -214,7 +214,7 @@ declare module ag.grid {
         getIsScrollLag(): () => boolean;
         getSortingOrder(): string[];
         getSlaveGrids(): GridOptions[];
-        getGroupRowRenderer(): Object | Function;
+        getGroupRowRenderer(): Function | Object;
         getRowHeight(): number;
         getOverlayLoadingTemplate(): string;
         getOverlayNoRowsTemplate(): string;
@@ -287,6 +287,8 @@ declare module ag.grid {
         static EVENT_ROW_CLICKED: string;
         static EVENT_ROW_DOUBLE_CLICKED: string;
         static EVENT_READY: string;
+        /** Page was changed in paginationController */
+        static EVENT_PAGE_CHANGED: string;
     }
 }
 declare module ag.grid {
@@ -706,6 +708,7 @@ declare module ag.grid {
         private filterChanged();
         private onMiniFilterChanged();
         private refreshVirtualRows();
+        updateSelectAllValue(): void;
         private clearVirtualRows();
         private onSelectAll();
         private updateAllCheckboxes(checked);
@@ -1344,7 +1347,8 @@ declare module ag.grid {
         private foundMaxRow;
         private totalPages;
         private currentPage;
-        init(angularGrid: any, gridOptionsWrapper: any): void;
+        private eventService;
+        init(angularGrid: any, gridOptionsWrapper: any, eventService: EventService): void;
         setDatasource(datasource: any): void;
         reset(): void;
         setTotalLabels(): void;
@@ -1357,6 +1361,8 @@ declare module ag.grid {
         onBtPrevious(): void;
         onBtFirst(): void;
         onBtLast(): void;
+        getPage(): number;
+        setPage(page: any): void;
         isZeroPagesToDisplay(): boolean;
         enableOrDisableButtons(): void;
         createTemplate(): string;
@@ -1950,6 +1956,7 @@ declare module ag.grid {
         filterModified: any;
         beforeSortChanged: any;
         afterSortChanged: any;
+        pageChanged: any;
         virtualRowRemoved: any;
         rowClicked: any;
         rowDoubleClicked: any;

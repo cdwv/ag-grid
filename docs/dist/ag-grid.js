@@ -911,6 +911,8 @@ var ag;
             Events.EVENT_ROW_CLICKED = 'rowClicked';
             Events.EVENT_ROW_DOUBLE_CLICKED = 'rowDoubleClicked';
             Events.EVENT_READY = 'ready';
+            /** Page was changed in paginationController */
+            Events.EVENT_PAGE_CHANGED = 'pageChanged';
             return Events;
         })();
         grid.Events = Events;
@@ -2585,10 +2587,13 @@ var ag;
                 return selectedValues;
             };
             SetFilterModel.prototype.setModel = function (model, isSelectAll) {
-                if (model && !isSelectAll) {
+                if (model && model.length < this.allUniqueValues.length) {
                     this.selectNothing();
                     for (var i = 0; i < model.length; i++) {
                         var newValue = model[i];
+                        if (newValue === 'null') {
+                            newValue = null;
+                        }
                         if (this.allUniqueValues.indexOf(newValue) >= 0) {
                             this.selectValue(model[i]);
                         }
@@ -2866,8 +2871,22 @@ var ag;
                 }
             };
             SetFilter.prototype.refreshVirtualRows = function () {
+                this.updateSelectAllValue();
                 this.clearVirtualRows();
                 this.drawVirtualRows();
+            };
+            SetFilter.prototype.updateSelectAllValue = function () {
+                if (this.model.isEverythingSelected()) {
+                    this.eSelectAll.indeterminate = false;
+                    this.eSelectAll.checked = true;
+                }
+                else if (this.model.isNothingSelected()) {
+                    this.eSelectAll.indeterminate = false;
+                    this.eSelectAll.checked = false;
+                }
+                else {
+                    this.eSelectAll.indeterminate = true;
+                }
             };
             SetFilter.prototype.clearVirtualRows = function () {
                 var rowsToRemove = Object.keys(this.rowsInBodyContainer);
@@ -3574,8 +3593,7 @@ var ag;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var ag;
 (function (ag) {
@@ -7558,11 +7576,12 @@ var ag;
         var PaginationController = (function () {
             function PaginationController() {
             }
-            PaginationController.prototype.init = function (angularGrid, gridOptionsWrapper) {
+            PaginationController.prototype.init = function (angularGrid, gridOptionsWrapper, eventService) {
                 this.gridOptionsWrapper = gridOptionsWrapper;
                 this.angularGrid = angularGrid;
                 this.setupComponents();
                 this.callVersion = 0;
+                this.eventService = eventService;
             };
             PaginationController.prototype.setDatasource = function (datasource) {
                 this.datasource = datasource;
@@ -7679,6 +7698,7 @@ var ag;
                 }
                 this.datasource.getRows(params);
                 function successCallback(rows, lastRowIndex) {
+                    that.eventService.dispatchEvent(grid.Events.EVENT_PAGE_CHANGED);
                     if (that.isCallDaemon(callVersionCopy)) {
                         return;
                     }
@@ -7711,6 +7731,19 @@ var ag;
             };
             PaginationController.prototype.onBtLast = function () {
                 this.currentPage = this.totalPages - 1;
+                this.loadPage();
+            };
+            PaginationController.prototype.getPage = function () {
+                return this.currentPage + 1;
+            };
+            PaginationController.prototype.setPage = function (page) {
+                if (page > this.totalPages - 1) {
+                    page = this.totalPages - 1;
+                }
+                if (page < 1) {
+                    page = 1;
+                }
+                this.currentPage = page - 1;
                 this.loadPage();
             };
             PaginationController.prototype.isZeroPagesToDisplay = function () {
@@ -9752,7 +9785,7 @@ var ag;
                 var paginationGui = null;
                 if (!gridOptionsWrapper.isForPrint()) {
                     paginationController = new grid.PaginationController();
-                    paginationController.init(this, gridOptionsWrapper);
+                    paginationController.init(this, gridOptionsWrapper, eventService);
                     paginationGui = paginationController.getGui();
                 }
                 this.rowModel = rowModel;
@@ -10358,6 +10391,7 @@ var ag;
                 this.filterModified = new _ng.EventEmitter();
                 this.beforeSortChanged = new _ng.EventEmitter();
                 this.afterSortChanged = new _ng.EventEmitter();
+                this.pageChanged = new _ng.EventEmitter();
                 this.virtualRowRemoved = new _ng.EventEmitter();
                 this.rowClicked = new _ng.EventEmitter();
                 this.rowDoubleClicked = new _ng.EventEmitter();
@@ -10454,6 +10488,9 @@ var ag;
                     case grid.Events.EVENT_BEFORE_SORT_CHANGED:
                         emitter = this.beforeSortChanged;
                         break;
+                    case grid.Events.EVENT_PAGE_CHANGED:
+                        emitter = this.pageChanged;
+                        break;
                     case grid.Events.EVENT_FILTER_MODIFIED:
                         emitter = this.filterModified;
                         break;
@@ -10492,7 +10529,7 @@ var ag;
                         // core grid events
                         'modelUpdated', 'cellClicked', 'cellDoubleClicked', 'cellContextMenu', 'cellValueChanged', 'cellFocused',
                         'rowSelected', 'rowDeselected', 'selectionChanged', 'beforeFilterChanged', 'afterFilterChanged',
-                        'filterModified', 'beforeSortChanged', 'afterSortChanged', 'virtualRowRemoved',
+                        'filterModified', 'beforeSortChanged', 'afterSortChanged', 'pageChanged', 'virtualRowRemoved',
                         'rowClicked', 'rowDoubleClicked', 'ready',
                         // column events
                         'columnEverythingChanged', 'columnPivotChanged', 'columnValueChanged', 'columnMoved',

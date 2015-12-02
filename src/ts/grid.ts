@@ -223,7 +223,7 @@ module ag.grid {
             var paginationGui: any = null;
             if (!gridOptionsWrapper.isForPrint()) {
                 paginationController = new PaginationController();
-                paginationController.init(this, gridOptionsWrapper);
+                paginationController.init(this, gridOptionsWrapper, eventService);
                 paginationGui = paginationController.getGui();
             }
 

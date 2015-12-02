@@ -49,12 +49,14 @@ module ag.grid {
         private foundMaxRow: boolean;
         private totalPages: number;
         private currentPage: number;
+        private eventService: EventService;
 
-        init(angularGrid: any, gridOptionsWrapper: any) {
+        init(angularGrid: any, gridOptionsWrapper: any, eventService: EventService) {
             this.gridOptionsWrapper = gridOptionsWrapper;
             this.angularGrid = angularGrid;
             this.setupComponents();
             this.callVersion = 0;
+            this.eventService = eventService;
         }
 
         setDatasource(datasource: any) {
@@ -190,6 +192,8 @@ module ag.grid {
             this.datasource.getRows(params);
 
             function successCallback(rows: any, lastRowIndex: any) {
+                that.eventService.dispatchEvent(grid.Events.EVENT_PAGE_CHANGED);
+
                 if (that.isCallDaemon(callVersionCopy)) {
                     return;
                 }
