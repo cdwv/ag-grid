@@ -240,7 +240,7 @@ module ag.grid {
         }
 
         setPage(page: any) {
-            if(page > this.totalPages - 1) {
+            if(this.totalPages !== null && page > this.totalPages - 1) {
                 page = this.totalPages - 1;
             }
 
