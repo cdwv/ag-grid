@@ -39,6 +39,7 @@ module ag.grid {
         public filterModified = new _ng.EventEmitter();
         public beforeSortChanged = new _ng.EventEmitter();
         public afterSortChanged = new _ng.EventEmitter();
+        public pageChanged = new _ng.EventEmitter();
         public virtualRowRemoved = new _ng.EventEmitter();
         public rowClicked = new _ng.EventEmitter();
         public rowDoubleClicked = new _ng.EventEmitter();
@@ -166,6 +167,7 @@ module ag.grid {
                 case Events.EVENT_AFTER_FILTER_CHANGED: emitter = this.afterFilterChanged; break;
                 case Events.EVENT_AFTER_SORT_CHANGED: emitter = this.afterSortChanged; break;
                 case Events.EVENT_BEFORE_SORT_CHANGED: emitter = this.beforeSortChanged; break;
+                case Events.EVENT_PAGE_CHANGED: emitter = this.pageChanged; break;
                 case Events.EVENT_FILTER_MODIFIED: emitter = this.filterModified; break;
                 case Events.EVENT_VIRTUAL_ROW_REMOVED: emitter = this.virtualRowRemoved; break;
                 case Events.EVENT_ROW_CLICKED: emitter = this.rowClicked; break;
@@ -202,7 +204,7 @@ module ag.grid {
                     // core grid events
                     'modelUpdated', 'cellClicked', 'cellDoubleClicked', 'cellContextMenu', 'cellValueChanged', 'cellFocused',
                     'rowSelected', 'rowDeselected', 'selectionChanged', 'beforeFilterChanged', 'afterFilterChanged',
-                    'filterModified', 'beforeSortChanged', 'afterSortChanged', 'virtualRowRemoved',
+                    'filterModified', 'beforeSortChanged', 'afterSortChanged', 'pageChanged', 'virtualRowRemoved',
                     'rowClicked', 'rowDoubleClicked', 'ready',
                     // column events
                     'columnEverythingChanged','columnPivotChanged','columnValueChanged','columnMoved',
